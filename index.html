@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Food Recipe Generator</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    #video, #photo { width: 300px; margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <h1>Food Recipe Generator</h1>
+  <div id="controls">
+    <button id="start-camera">Start Camera</button>
+    <button id="take-photo" disabled>Take Photo</button>
+    <input type="file" id="upload-photo" accept="image/*">
+  </div>
+  <video id="video" autoplay style="display:none;"></video>
+  <canvas id="canvas" style="display:none;"></canvas>
+  <img id="photo" alt="Your photo will appear here" src="">
+  <div id="results">
+    <h2>Detected Ingredients</h2>
+    <div id="ingredients"></div>
+    <h2>Recipe Suggestion</h2>
+    <div id="recipe"></div>
+  </div>
+  <script>
+    const startCameraButton = document.getElementById('start-camera');
+    const takePhotoButton = document.getElementById('take-photo');
+    const uploadPhotoInput = document.getElementById('upload-photo');
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const photo = document.getElementById('photo');
+    let stream;
+
+    // Start camera and show video stream
+    startCameraButton.addEventListener('click', async () => {
+      stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      video.srcObject = stream;
+      video.style.display = 'block';
+      takePhotoButton.disabled = false;
+    });
+
+    // Capture photo from video stream
+    takePhotoButton.addEventListener('click', () => {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0);
+      const dataUrl = canvas.toDataURL('image/png');
+      photo.src = dataUrl;
+      stream.getTracks().forEach(track => track.stop());
+      video.style.display = 'none';
+    });
+
+    // Handle photo upload
+    uploadPhotoInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        photo.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  </script>
+</body>
+</html>
