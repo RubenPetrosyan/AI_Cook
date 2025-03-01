@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let stream;
 
+    // Your Vercel backend URL (Replace with your actual deployed API URL)
+    const API_URL = "https://your-vercel-backend.vercel.app/chat"; 
+
     // Start Camera
     startCameraButton.addEventListener('click', async () => {
         try {
@@ -39,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         video.style.display = 'none';
 
-        // Simulate food detection (replace with actual API)
+        // Simulate food detection (Replace with a real API later)
         detectIngredients(["Tomato", "Cheese", "Basil"]);
     });
 
@@ -53,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             photo.src = e.target.result;
             photo.style.display = 'block';
 
-            // Simulate food detection (replace with actual API)
+            // Simulate food detection (Replace with an AI image API)
             detectIngredients(["Chicken", "Garlic", "Pepper"]);
         };
         reader.readAsDataURL(file);
@@ -71,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Send Ingredients to ChatGPT Backend API
     async function getRecipe(ingredients) {
         try {
-            const response = await fetch('http://localhost:5000/chat', {
+            const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: `I have these ingredients: ${ingredients}. What can I cook?` })
